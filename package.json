@@ -7,7 +7,7 @@
   "homepage": "https://github.com/openblockcc/openblock-blocks#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/openblockcc/openblock-blocks.git"
+    "url": "git+ssh://git@github.com:BakataSolutionsOdooModules/DigitalCoDeBlock-Blocks.git"
   },
   "main": "./dist/vertical.js",
   "browser": "./shim/vertical.js",
@@ -29,7 +29,7 @@
     "exports-loader": "0.6.3",
     "google-closure-library": "20190301.0.0",
     "imports-loader": "0.6.5",
-    "openblock-l10n": "^3.15.20240704111820"
+    "digitalcodeblock-l10n": "git@github.com:BakataSolutionsOdooModules/DigitalCoDeSign-l10n.git"
   },
   "devDependencies": {
     "async": "2.6.3",
