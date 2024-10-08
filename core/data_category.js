@@ -215,6 +215,18 @@ Blockly.DataCategory.addAddToList = function(xmlList, variable) {
       ['ITEM', 'text', Blockly.Msg.DEFAULT_LIST_ITEM]);
 };
 
+Blockly.DataCategory.addDataCreateListOfItems = function(xmlList, variable) {
+  // <block type="data_create_list_with">
+  //   <field name="LIST">variablename</field>
+  //   <value name="ITEMS">
+  //     <shadow type="data_listcontents">
+  //       <field name="LIST">variablename</field>
+  //     </shadow>
+  //   </value>
+  // </block>
+  Blockly.DataCategory.addBlock(xmlList, variable, 'data_createListOfItems', 'LIST');
+}
+
 /**
  * Construct and add a data_deleteoflist block to xmlList.
  * @param {!Array.<!Element>} xmlList Array of XML block elements.
