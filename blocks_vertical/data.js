@@ -253,57 +253,57 @@ Blockly.Blocks['data_addtolist'] = {
   }
 };
 
-Blockly.Blocks['data_createListOfItems'] = {
-  /**
-   * Block to create a list with items.
-   * @this Blockly.Block
-   */
-  init: function () {
-    this.jsonInit({
-      "message0": "Definir lista %1 de %2 con valores %3",
-      "args0": [
-        {
-          "type": "input_value",
-          "name": "nombre_lista",
-          "check": "String"
-        },
-        {
-          "type": "field_dropdown",
-          "name": "tipo_lista",
-          "options": [
-            [
-              "Booleanos",
-              "bool"
-            ],
-            [
-              "Cadenas",
-              "string"
-            ],
-            [
-              "Números enteros",
-              "int"
-            ],
-            [
-              "Números decimales",
-              "float"
-            ]
-          ]
-        },
-        {
-          "type": "input_value",
-          "name": "valores_lista",
-          "check": "String"
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "colour": 315,
-      "inputsInline": true,
-      "category": Blockly.Categories.dataLists,
-    }
-    );
-  }
-};
+// Blockly.Blocks['data_createListOfItems'] = {
+//   /**
+//    * Block to create a list with items.
+//    * @this Blockly.Block
+//    */
+//   init: function () {
+//     this.jsonInit({
+//       "message0": "Definir lista %1 de %2 con valores %3",
+//       "args0": [
+//         {
+//           "type": "input_value",
+//           "name": "nombre_lista",
+//           "check": "String"
+//         },
+//         {
+//           "type": "field_dropdown",
+//           "name": "tipo_lista",
+//           "options": [
+//             [
+//               "Booleanos",
+//               "bool"
+//             ],
+//             [
+//               "Cadenas",
+//               "string"
+//             ],
+//             [
+//               "Números enteros",
+//               "int"
+//             ],
+//             [
+//               "Números decimales",
+//               "float"
+//             ]
+//           ]
+//         },
+//         {
+//           "type": "input_value",
+//           "name": "valores_lista",
+//           "check": "String"
+//         }
+//       ],
+//       "previousStatement": null,
+//       "nextStatement": null,
+//       "colour": 315,
+//       "inputsInline": true,
+//       "category": Blockly.Categories.dataLists,
+//     }
+//     );
+//   }
+// };
 
 Blockly.Blocks['data_deleteoflist'] = {
   /**

@@ -154,17 +154,17 @@ Blockly.DataCategory.addChangeVariableBy = function(xmlList, variable) {
 };
 
 
-Blockly.DataCategory.addDataCreateListOfItems = function(xmlList, variable) {
-  // <block type="data_create_list_with">
-  //   <field name="LIST">variablename</field>
-  //   <value name="ITEMS">
-  //     <shadow type="data_listcontents">
-  //       <field name="LIST">variablename</field>
-  //     </shadow>
-  //   </value>
-  // </block>
-  Blockly.DataCategory.addBlock(xmlList, variable, 'data_createListOfItems', 'LIST');
-}
+// Blockly.DataCategory.addDataCreateListOfItems = function(xmlList, variable) {
+//   // <block type="data_create_list_with">
+//   //   <field name="LIST">variablename</field>
+//   //   <value name="ITEMS">
+//   //     <shadow type="data_listcontents">
+//   //       <field name="LIST">variablename</field>
+//   //     </shadow>
+//   //   </value>
+//   // </block>
+//   Blockly.DataCategory.addBlock(xmlList, variable, 'data_createListOfItems', 'LIST');
+// }
 
 
 /**

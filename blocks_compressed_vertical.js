@@ -59,57 +59,6 @@ Blockly.Blocks.data_listcontents={init:function(){this.jsonInit({message0:"%1",a
 Blockly.Blocks.data_listindexall={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_numberdropdown",name:"INDEX",value:"1",min:1,precision:1,options:[["1","1"],[Blockly.Msg.DATA_INDEX_LAST,"last"],[Blockly.Msg.DATA_INDEX_ALL,"all"]]}],category:Blockly.Categories.data,extensions:["colours_textfield","output_string"]})}};
 Blockly.Blocks.data_listindexrandom={init:function(){this.jsonInit({message0:"%1",args0:[{type:"field_numberdropdown",name:"INDEX",value:"1",min:1,precision:1,options:[["1","1"],[Blockly.Msg.DATA_INDEX_LAST,"last"],[Blockly.Msg.DATA_INDEX_RANDOM,"random"]]}],category:Blockly.Categories.data,extensions:["colours_textfield","output_string"]})}};
 Blockly.Blocks.data_addtolist={init:function(){this.jsonInit({message0:Blockly.Msg.DATA_ADDTOLIST,args0:[{type:"input_value",name:"ITEM"},{type:"field_variable",name:"LIST",variableTypes:[Blockly.LIST_VARIABLE_TYPE]}],category:Blockly.Categories.dataLists,extensions:["colours_data_lists","shape_statement"]})}};
-Blockly.Blocks['data_createListOfItems'] = {
-  /**
-   * Block to create a list with items.
-   * @this Blockly.Block
-   */
-  init: function () {
-    this.jsonInit({
-      "message0": "Definir lista %1 de %2 con valores %3",
-      "args0": [
-        {
-          "type": "input_value",
-          "name": "nombre_lista",
-          "check": "String"
-        },
-        {
-          "type": "field_dropdown",
-          "name": "tipo_lista",
-          "options": [
-            [
-              "Booleanos",
-              "bool"
-            ],
-            [
-              "Cadenas",
-              "string"
-            ],
-            [
-              "Números enteros",
-              "int"
-            ],
-            [
-              "Números decimales",
-              "float"
-            ]
-          ]
-        },
-        {
-          "type": "input_value",
-          "name": "valores_lista",
-          "check": "String"
-        }
-      ],
-      "previousStatement": null,
-      "nextStatement": null,
-      "colour": 315,
-      "inputsInline": true,
-      "category": Blockly.Categories.dataLists,
-    }
-    );
-  }
-};
 Blockly.Blocks.data_deleteoflist={init:function(){this.jsonInit({message0:Blockly.Msg.DATA_DELETEOFLIST,args0:[{type:"input_value",name:"INDEX"},{type:"field_variable",name:"LIST",variableTypes:[Blockly.LIST_VARIABLE_TYPE]}],category:Blockly.Categories.dataLists,extensions:["colours_data_lists","shape_statement"]})}};
 Blockly.Blocks.data_deletealloflist={init:function(){this.jsonInit({message0:Blockly.Msg.DATA_DELETEALLOFLIST,args0:[{type:"field_variable",name:"LIST",variableTypes:[Blockly.LIST_VARIABLE_TYPE]}],category:Blockly.Categories.dataLists,extensions:["colours_data_lists","shape_statement"]})}};
 Blockly.Blocks.data_insertatlist={init:function(){this.jsonInit({message0:Blockly.Msg.DATA_INSERTATLIST,args0:[{type:"input_value",name:"ITEM"},{type:"input_value",name:"INDEX"},{type:"field_variable",name:"LIST",variableTypes:[Blockly.LIST_VARIABLE_TYPE]}],category:Blockly.Categories.dataLists,extensions:["colours_data_lists","shape_statement"]})}};
