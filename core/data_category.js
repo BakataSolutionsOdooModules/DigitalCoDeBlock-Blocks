@@ -153,6 +153,20 @@ Blockly.DataCategory.addChangeVariableBy = function(xmlList, variable) {
       'VARIABLE', ['VALUE', 'math_number', 1]);
 };
 
+
+Blockly.DataCategory.addDataCreateListOfItems = function(xmlList, variable) {
+  // <block type="data_create_list_with">
+  //   <field name="LIST">variablename</field>
+  //   <value name="ITEMS">
+  //     <shadow type="data_listcontents">
+  //       <field name="LIST">variablename</field>
+  //     </shadow>
+  //   </value>
+  // </block>
+  Blockly.DataCategory.addBlock(xmlList, variable, 'data_createListOfItems', 'LIST');
+}
+
+
 /**
  * Construct and add a data_showVariable block to xmlList.
  * @param {!Array.<!Element>} xmlList Array of XML block elements.
