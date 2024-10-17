@@ -34,12 +34,17 @@
 #   blocks_vertical_compressed.js: The compressed Scratch vertical blocks.
 #   msg/js/<LANG>.js for every language <LANG> defined in msg/js/<LANG>.json.
 
+from functools import reduce
+from importlib import reload
 import sys
-if sys.version_info[0] != 2:
-  raise Exception("Blockly build only compatible with Python 2.x.\n"
-                  "You are using: " + sys.version)
+# if sys.version_info[0] != 2:
+#   raise Exception("Blockly build only compatible with Python 2.x.\n"
+#                   "You are using: " + sys.version)
 
-import errno, glob, httplib, json, os, re, subprocess, threading, urllib
+import errno, glob, http, json, os, re, subprocess, threading, urllib
+
+
+from copy import deepcopy
 
 REMOTE_COMPILER = "remote"
 
@@ -99,7 +104,7 @@ class Gen_uncompressed(threading.Thread):
     f = open(target_filename, 'w')
     f.write(HEADER)
     f.write(self.format_js("""
-var isNodeJS = !!(typeof module !== 'undefined' && module.exports &&
+    var isNodeJS = !!(typeof module !== 'undefined' && module.exports &&
                   typeof window === 'undefined');
 
 if (isNodeJS) {
@@ -142,8 +147,8 @@ window.BLOCKLY_BOOT = function() {
   }
 """))
     add_dependency = []
-    base_path = calcdeps.FindClosureBasePath(self.search_paths)
-    for dep in calcdeps.BuildDependenciesFromFiles(self.search_paths):
+    base_path = calcdeps.FindClosureBasePath(deepcopy(self.search_paths))
+    for dep in calcdeps.BuildDependenciesFromFiles(deepcopy(self.search_paths)):
       add_dependency.append(calcdeps.GetDepsLine(dep, base_path))
     add_dependency.sort()  # Deterministic build.
     add_dependency = '\n'.join(add_dependency)
@@ -254,7 +259,7 @@ class Gen_compressed(threading.Thread):
     ]
 
     # Read in all the source files.
-    filenames = calcdeps.CalculateDependencies(search_paths,
+    filenames = calcdeps.CalculateDependencies(deepcopy(search_paths),
       [os.path.join("core", "blockly.js")])
     filenames.sort()  # Deterministic build.
     for filename in filenames:
@@ -415,7 +420,7 @@ class Gen_compressed(threading.Thread):
             remoteParams.append((arg, value))
 
       headers = {"Content-type": "application/x-www-form-urlencoded"}
-      conn = httplib.HTTPSConnection("closure-compiler.appspot.com")
+      conn = http.client.HTTPSConnection("closure-compiler.appspot.com")
       conn.request("POST", "/compile", urllib.urlencode(remoteParams), headers)
       response = conn.getresponse()
       json_str = response.read()
@@ -431,12 +436,12 @@ class Gen_compressed(threading.Thread):
       n = int(name[6:]) - 1
       return filenames[n]
 
-    if json_data.has_key("serverErrors"):
+    if "serverErrors" in json_data:
       errors = json_data["serverErrors"]
       for error in errors:
         print("SERVER ERROR: %s" % target_filename)
         print(error["error"])
-    elif json_data.has_key("errors"):
+    elif "errors" in json_data:
       errors = json_data["errors"]
       for error in errors:
         print("FATAL ERROR")
@@ -448,7 +453,7 @@ class Gen_compressed(threading.Thread):
           print((" " * error["charno"]) + "^")
         sys.exit(1)
     else:
-      if json_data.has_key("warnings"):
+      if "warnings" in json_data:
         warnings = json_data["warnings"]
         for warning in warnings:
           print("WARNING")
@@ -465,16 +470,16 @@ class Gen_compressed(threading.Thread):
     return False
 
   def write_output(self, target_filename, remove, json_data):
-      if not json_data.has_key("compiledCode"):
+      if not "compiledCode" in json_data:
         print("FATAL ERROR: Compiler did not return compiledCode.")
         sys.exit(1)
 
       compiledCode = json_data["compiledCode"]
 
-      if (compiledCode.find("new Blockly.Generator") != -1):
-        code = HEADER + "\nlet Blockly = require(\'digitalcodeblock-blocks\');\n\n" + compiledCode
+      if (compiledCode.find(b"new Blockly.Generator") != -1):
+        code = HEADER + "\nlet Blockly = require(\'digitalcodeblock-blocks\');\n\n" + compiledCode.decode("utf-8")
       else:
-        code = HEADER + "\n" + compiledCode
+        code = HEADER + "\n" + compiledCode.decode("utf-8")
 
       code = code.replace(remove, "")
 
@@ -607,27 +612,27 @@ def exclude_vertical(item):
   return not item.endswith("block_render_svg_vertical.js")
 
 def exclude_horizontal(item):
-  return not item.endswith("block_render_svg_horizontal.js")
+  return not item.endswith("block_render_svg_horizontal.js") or "Blockly.Device" in item
 
 if __name__ == "__main__":
   try:
     closure_dir = CLOSURE_DIR_NPM
     closure_root = CLOSURE_ROOT_NPM
     closure_library = CLOSURE_LIBRARY_NPM
-    closure_compiler = CLOSURE_COMPILER_NPM
+    closure_compiler = os.path.join(closure_root,'.bin',CLOSURE_COMPILER_NPM)
 
     # Load calcdeps from the local library
     calcdeps = import_path(os.path.join(
         closure_root, closure_library, "closure", "bin", "calcdeps.py"))
 
     # Sanity check the local compiler
-    test_args = [closure_compiler, os.path.join("build", "test_input.js")]
+    test_args = [ closure_compiler, os.path.join("build", "test_input.js")]
     if(os.name == "nt"):
       test_proc = subprocess.Popen(test_args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, shell=True)
     else:
       test_proc = subprocess.Popen(test_args, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     (stdout, _) = test_proc.communicate()
-    assert stdout == read(os.path.join("build", "test_expect.js"))
+    assert stdout.decode('utf-8') == read(os.path.join("build", "test_expect.js"))
 
     print("Using local compiler: %s ...\n" % CLOSURE_COMPILER_NPM)
   except (ImportError, AssertionError):
@@ -666,16 +671,16 @@ if __name__ == "__main__":
     "closure_dir": closure_dir,
     "closure_root": closure_root,
     "closure_library": closure_library,
-    "closure_compiler": closure_compiler,
+    "closure_compiler": 'local',
   }
 
   # Run all tasks in parallel threads.
   # Uncompressed is limited by processor speed.
   # Compressed is limited by network and server speed.
   # Vertical:
-  Gen_uncompressed(search_paths_vertical, True, closure_env).start()
+  Gen_uncompressed(deepcopy(search_paths_vertical), True, closure_env).start()
   # Horizontal:
-  Gen_uncompressed(search_paths_horizontal, False, closure_env).start()
+  Gen_uncompressed(deepcopy(search_paths_horizontal), False, closure_env).start()
 
   # Compressed forms of vertical and horizontal.
   Gen_compressed(search_paths_vertical, search_paths_horizontal, closure_env).start()
